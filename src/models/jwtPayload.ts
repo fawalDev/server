@@ -1,9 +1,20 @@
 export default class JwtPayload {
+    public email: string
+    public name: string
+    public isAdmin: boolean
+
+
+
+
     constructor(
-        public email: string,
-        public name: string,
-        public isAdmin: boolean
-    ) {}
+        email: string,
+        name: string,
+        isAdmin: boolean
+    ) {
+        this.email = email;
+        this.name = name;
+        this.isAdmin = isAdmin;
+    }
 
     static fromObject(obj: any): JwtPayload {
         return new JwtPayload(

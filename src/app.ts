@@ -1,6 +1,6 @@
+import './.d.ts/requestHandler.d.ts'
 import type { Request, Response, NextFunction } from 'express'
 import type ErrorRes from './models/errorResponse.ts';
-
 
 import express from 'express';
 import dotenv from 'dotenv';
@@ -9,9 +9,7 @@ import cors from 'cors';
 import Mongoose from 'mongoose';
 
 import authRoute from './routes/authen.ts';
-
-
-
+import postRoute from './routes/post.ts';
 
 const app = express();
 
@@ -22,8 +20,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
-app.use('/api/v1', authRoute)
-
+app.use('/api/v1/auth', authRoute)
+app.use('/api/v1/post', postRoute)
 
 app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
     const status = error.status ?? 500
