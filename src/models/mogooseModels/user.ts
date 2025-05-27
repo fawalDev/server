@@ -6,7 +6,7 @@ interface IUserModel extends Model<IUser> {}
 
 const userSchema = new Schema<IUser, IUserModel>({
     email: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    name: { type: String },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false }
 })

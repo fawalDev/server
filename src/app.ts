@@ -1,4 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
+import type ErrorRes from './models/errorResponse.ts';
+
 
 import express from 'express';
 import dotenv from 'dotenv';
@@ -13,14 +15,14 @@ import authRoute from './routes/authen.ts';
 
 const app = express();
 
-// const corsOptions = {
-//     origin: process.env.Client_URL || 'http://localhost:3000',
-//     credentials: true
-// }
+const corsOptions = {
+    origin: process.env.Client_URL || 'http://localhost:3000',
+    credentials: true
+}
 
-app.use(cors())
+app.use(cors(corsOptions))
 
-app.use(authRoute)
+app.use('/api/v1', authRoute)
 
 
 app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
@@ -35,14 +37,8 @@ app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
     res.status(status).json(safeError)
 })
 
-app.listen(5000, () => {
-    console.log('Server is running on port 5000');
-});
-
-
 import bcrypt from 'bcryptjs'
 import User from './models/mogooseModels/user.ts';
-import type ErrorRes from './models/errorResponse.ts';
 
 Mongoose.connect(process.env.MONGODB_URI!)
     .then(_ => {
