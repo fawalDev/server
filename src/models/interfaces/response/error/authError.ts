@@ -1,4 +1,4 @@
-import type IAuthRes from "../authenRes.ts"
+import type IAuthRes from "../fulfill/authenRes.ts"
 
 /**
  * authen error response

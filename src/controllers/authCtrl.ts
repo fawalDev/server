@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express'
 import type IAuthError from '../models/interfaces/response/error/authError.ts'
-import type IAuthRes from '../models/interfaces/response/authenRes.ts'
+import type IAuthRes from '../models/interfaces/response/fulfill/authenRes.ts'
 
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'

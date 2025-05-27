@@ -1,6 +1,5 @@
-import type IRes from "./interfaces/response/response.ts";
 
-export default class Res<T extends object> implements IRes {
+export default class Res<T extends object>  {
     constructor(
         public message: string,
         public status?: number,

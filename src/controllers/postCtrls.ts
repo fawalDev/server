@@ -3,13 +3,14 @@ import type { Request, Response, NextFunction } from 'express';
 import Post from '../models/mogooseModels/post.ts';
 import ErrorRes from '../models/errorResponse.ts';
 import Res from '../models/res.ts';
+import type IPaginationRes from '../models/interfaces/response/fulfill/paginationRes.ts';
 
 // Create a new post
 async function createPost(req: Request, res: Response, next: NextFunction) {
     try {
         const { title, content, imgUrl } = req.body;
         const post = await Post.create({ title, content, imgUrl });
-        res.status(201).json(new Res('Post created successfully', 201, post));
+        res.status(201).json(post);
     } catch (error) {
         next(error);
     }
@@ -32,15 +33,13 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
 
         const totalPages = Math.ceil(total / limit);
 
-        res.status(200).json(new Res('Posts fetched successfully', 200, {
+        const respond: IPaginationRes = {
             posts,
             pagination: {
-                currentPage: page,
-                totalPages,
-                totalItems: total,
-                itemsPerPage: limit
+                currentPage: page, totalPages, totalItems: total, itemsPerPage: limit
             }
-        }));
+        }
+        res.status(200).json(respond);
     } catch (error) {
         next(error);
     }
@@ -53,7 +52,7 @@ async function getPost(req: Request, res: Response, next: NextFunction) {
         if (!post) {
             throw new ErrorRes('Post not found', 404);
         }
-        res.status(200).json(new Res('Post fetched successfully', 200, post));
+        res.status(200).json(post);
     } catch (error) {
         next(error);
     }
@@ -64,15 +63,15 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
     try {
         const { title, content, imgUrl } = req.body;
         const post = await Post.findByIdAndUpdate(
-            req.params.id, 
+            req.params.id,
             { title, content, imgUrl },
             { new: true }
         ).lean();
-        
+
         if (!post) {
             throw new ErrorRes('Post not found', 404);
         }
-        res.status(200).json(new Res('Post updated successfully', 200, post));
+        res.status(200).json(post);
     } catch (error) {
         next(error);
     }
