@@ -1,6 +1,6 @@
 import './.d.ts/requestHandler.d.ts'
 import type { Request, Response, NextFunction } from 'express'
-import type ErrorRes from './models/errorResponse.ts';
+import type ErrorRes from './models/response/errorRes.ts';
 
 import express from 'express';
 import dotenv from 'dotenv';

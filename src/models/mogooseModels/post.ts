@@ -1,4 +1,4 @@
-import type IPost from "../interfaces/post.ts";
+import type IPost from "../../interfaces/post.ts";
 
 import { Model, model, Schema } from "mongoose";
 

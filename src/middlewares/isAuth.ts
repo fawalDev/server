@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
-import type IAuthRes from '../models/interfaces/response/authenRes.ts';
+import type IAuthRes from '../interfaces/response/fulfill/authenRes.ts';
 
-import ErrorRes from '../models/errorResponse.ts';
+import ErrorRes from '../models/response/errorRes.ts';
 import { jwtVerify } from '../utils/jwtToken.ts';
 import type JwtPayload from '../models/jwtPayload.ts';
 

@@ -1,17 +1,18 @@
 import type { Request, Response, NextFunction } from 'express'
-import type IAuthError from '../models/interfaces/response/error/authError.ts'
-import type IAuthRes from '../models/interfaces/response/authenRes.ts'
+import type IAuthError from '../interfaces/response/error/authError.ts'
+import type IAuthRes from '../interfaces/response/fulfill/authenRes.ts'
 
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 
-import ErrorRes from '../models/errorResponse.ts'
-import Res from '../models/res.ts'
+import ErrorRes from '../models/response/errorRes.ts'
+import Res from '../models/response/res.ts'
 
 import User from '../models/mogooseModels/user.ts'
 import { createErrorRes } from '../utils/exValidator/createErrorRes.ts'
 import { jwtGen } from '../utils/jwtToken.ts'
 import JwtPayload from '../models/jwtPayload.ts'
+import AuthRes from '../models/response/authRes.ts'
 
 
 // req.body = { email, password }
@@ -35,10 +36,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
             const payload = new JwtPayload(email, name, isAdmin).toObject()
             const token = 'Bearer ' + jwtGen(payload)
 
-            res.status(200).json(new Res<IAuthRes>('login success', 200, {
-                jwtToken: token,
-                userInfor: { email, name, isAdmin }
-            }))
+            res.status(200).json(new AuthRes(token, { email, name, isAdmin }))
         }
         else {
             throw new ErrorRes<IAuthError>('Login failed', 400, { credential: 'User or password is not correct' })
@@ -69,10 +67,7 @@ async function signup(req: Request, res: Response, next: NextFunction) {
         const payload = new JwtPayload(email, name, isAdmin).toObject()
         const token = 'Bearer ' + jwtGen(payload)
 
-        res.status(201).json(new Res<IAuthRes>('Signup successfully', 200, {
-            jwtToken: token,
-            userInfor: { email, name, isAdmin }
-        }))
+        res.status(201).json(new AuthRes(token, { email, name, isAdmin }))
 
     } catch (error) {
         next(error)

@@ -1,4 +1,4 @@
-import type IUser from "../interfaces/user.ts";
+import type IUser from "../../interfaces/user.ts";
 
 import { Model, model, Schema } from "mongoose";
 

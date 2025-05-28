@@ -1,15 +1,25 @@
 import type { Request, Response, NextFunction } from 'express';
 
 import Post from '../models/mogooseModels/post.ts';
-import ErrorRes from '../models/errorResponse.ts';
-import Res from '../models/res.ts';
+import ErrorRes from '../models/response/errorRes.ts';
+import Res from '../models/response/res.ts';
+// import type IPaginationRes from '../interfaces/response/fulfill/paginationRes.ts';
 
 // Create a new post
 async function createPost(req: Request, res: Response, next: NextFunction) {
     try {
         const { title, content, imgUrl } = req.body;
         const post = await Post.create({ title, content, imgUrl });
-        res.status(201).json(new Res('Post created successfully', 201, post));
+        res.status(201).json(post);
+    } catch (error) {
+        next(error);
+    }
+}
+
+async function getPostsCount(req: Request, res: Response, next: NextFunction) {
+    try {
+        const count = await Post.countDocuments();
+        res.status(200).json({ count });
     } catch (error) {
         next(error);
     }
@@ -22,25 +32,12 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
 
-        const [posts, total] = await Promise.all([
-            Post.find()
-                .skip(skip)
-                .limit(limit)
-                .lean(),
-            Post.countDocuments()
-        ]);
+        const posts = await Post.find()
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
-        const totalPages = Math.ceil(total / limit);
-
-        res.status(200).json(new Res('Posts fetched successfully', 200, {
-            posts,
-            pagination: {
-                currentPage: page,
-                totalPages,
-                totalItems: total,
-                itemsPerPage: limit
-            }
-        }));
+        res.status(200).json({ posts });
     } catch (error) {
         next(error);
     }
@@ -53,7 +50,7 @@ async function getPost(req: Request, res: Response, next: NextFunction) {
         if (!post) {
             throw new ErrorRes('Post not found', 404);
         }
-        res.status(200).json(new Res('Post fetched successfully', 200, post));
+        res.status(200).json(post);
     } catch (error) {
         next(error);
     }
@@ -64,15 +61,15 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
     try {
         const { title, content, imgUrl } = req.body;
         const post = await Post.findByIdAndUpdate(
-            req.params.id, 
+            req.params.id,
             { title, content, imgUrl },
             { new: true }
         ).lean();
-        
+
         if (!post) {
             throw new ErrorRes('Post not found', 404);
         }
-        res.status(200).json(new Res('Post updated successfully', 200, post));
+        res.status(200).json(post);
     } catch (error) {
         next(error);
     }
@@ -91,4 +88,4 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export default { createPost, getPosts, getPost, updatePost, deletePost };
+export default { createPost, getPostsCount, getPosts, getPost, updatePost, deletePost };

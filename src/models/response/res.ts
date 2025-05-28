@@ -1,4 +1,4 @@
-import type IRes from "./interfaces/response/response.ts";
+import type IRes from "../../interfaces/response/res.ts";
 
 export default class Res<T extends object> implements IRes {
     constructor(
