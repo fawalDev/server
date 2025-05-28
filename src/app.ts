@@ -20,16 +20,23 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//     res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
+//     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//     next();
+// })
+
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/post', postRoute)
 
 app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
     const status = error.status ?? 500
     const message = status === 500 ? 'Server Internal Error!' : error.message ?? 'Unknown error'
-    const name = status === 500 ? 'Server Internal Error!' : error.name ?? 'Error'
 
     const safeError = {
-        status, message, name, cause: error.cause
+        message,
+        cause: error.cause
     }
 
     res.status(status).json(safeError)

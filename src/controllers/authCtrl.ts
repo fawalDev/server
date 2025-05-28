@@ -28,7 +28,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 
         const user = await User.findOne({ email }).lean()
         if (!user)
-            throw new ErrorRes<IAuthError>('Login failed', 400, { credential: 'User or password is not correct' })
+            throw new ErrorRes<IAuthError>('Login failed', 422, { credential: 'User or password is not correct' })
 
         const isValid = await bcrypt.compare(password, user?.password)
         if (isValid) {
@@ -39,7 +39,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
             res.status(200).json(new AuthRes(token, { email, name, isAdmin }))
         }
         else {
-            throw new ErrorRes<IAuthError>('Login failed', 400, { credential: 'User or password is not correct' })
+            throw new ErrorRes<IAuthError>('Login failed', 422, { credential: 'User or password is not correct' })
         }
     } catch (error) {
         next(error)
