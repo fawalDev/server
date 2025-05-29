@@ -1,13 +1,14 @@
 import express, { Router } from 'express';
 import postCtrl from '../controllers/postCtrls.ts';
 import isAuth from '../middlewares/isAuth.ts';
+import { multerImgMw } from '../middlewares/multer.ts';
 
 const postRoute = Router();
 
 postRoute.use(express.json());
 
 // Apply authentication middleware to all post routes
-postRoute.use(isAuth);
+postRoute.use(isAuth, multerImgMw);
 
 // Post routes
 postRoute.post('/', postCtrl.createPost);

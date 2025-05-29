@@ -1,15 +1,22 @@
 import type { Request, Response, NextFunction } from 'express';
+import type IPostError from '../interfaces/response/error/postError.ts';
 
 import Post from '../models/mogooseModels/post.ts';
 import ErrorRes from '../models/response/errorRes.ts';
 import Res from '../models/response/res.ts';
-// import type IPaginationRes from '../interfaces/response/fulfill/paginationRes.ts';
+
+
 
 // Create a new post
 async function createPost(req: Request, res: Response, next: NextFunction) {
     try {
-        const { title, content, imgUrl } = req.body;
-        const post = await Post.create({ title, content, imgUrl });
+        if (!req.file)
+            throw new ErrorRes<IPostError>('Create post failed', 400, { image: 'Image file is required' });
+
+        const filePath = req.file.path
+
+        const { title, content } = req.body;
+        const post = await Post.create({ title, content, imgUrl: filePath });
         res.status(201).json(post);
     } catch (error) {
         next(error);
@@ -19,7 +26,7 @@ async function createPost(req: Request, res: Response, next: NextFunction) {
 async function getPostsCount(req: Request, res: Response, next: NextFunction) {
     try {
         const count = await Post.countDocuments();
-        res.status(200).json({ count });
+        res.status(200).json(count);
     } catch (error) {
         next(error);
     }
@@ -37,7 +44,7 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
             .limit(limit)
             .lean();
 
-        res.status(200).json({ posts });
+        res.status(200).json(posts);
     } catch (error) {
         next(error);
     }
