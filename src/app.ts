@@ -38,6 +38,8 @@ app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
         message,
         cause: error.cause
     }
+    console.log(error)
+
 
     res.status(status).json(safeError)
 })

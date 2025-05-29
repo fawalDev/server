@@ -5,7 +5,7 @@ import { multerImgMw } from '../middlewares/multer.ts';
 
 const postRoute = Router();
 
-postRoute.use(express.json());
+// postRoute.use(express.json());
 
 // Apply authentication middleware to all post routes
 postRoute.use(isAuth, multerImgMw);
