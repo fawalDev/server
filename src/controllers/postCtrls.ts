@@ -11,7 +11,7 @@ import Res from '../models/response/res.ts';
 async function createPost(req: Request, res: Response, next: NextFunction) {
     try {
         if (!req.file)
-            throw new ErrorRes<IPostError>('Create post failed', 400, { image: 'Image file is required' });
+            throw new ErrorRes<IPostError>('Create post failed', 422, { image: 'Image file is required' });
 
         const filePath = req.file.path
 
@@ -66,9 +66,9 @@ async function getPost(req: Request, res: Response, next: NextFunction) {
 // Update a post
 async function updatePost(req: Request, res: Response, next: NextFunction) {
     try {
-        const { title, content, imgUrl } = req.body;
+        const { id, title, content, imgUrl } = req.body;
         const post = await Post.findByIdAndUpdate(
-            req.params.id,
+            id,
             { title, content, imgUrl },
             { new: true }
         ).lean();

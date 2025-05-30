@@ -13,7 +13,7 @@ postRoute.get('/:id', postCtrl.getPost);
 postRoute.use(isAuth, multerImgMw);
 
 postRoute.post('/', postCtrl.createPost);
-postRoute.put('/:id', postCtrl.updatePost);
+postRoute.put('/', postCtrl.updatePost);
 postRoute.delete('/:id', postCtrl.deletePost);
 
 export default postRoute;

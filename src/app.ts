@@ -27,17 +27,16 @@ app.use(cors(corsOptions))
 //     next();
 // })
 
-app.use('/public',express.static('public'))
+app.use('/public', express.static('public'))
 
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/post', postRoute)
 
 app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
-    const status = error.status ?? 500
-    const message = status === 500 ? 'Server Internal Error!' : error.message ?? 'Unknown error'
+    const status = error.status || 500
 
     const safeError = {
-        message,
+        message: error.message || 'Server Internal Error',
         cause: error.cause
     }
     console.log(error)
