@@ -27,6 +27,8 @@ app.use(cors(corsOptions))
 //     next();
 // })
 
+app.use('/public',express.static('public'))
+
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/post', postRoute)
 
