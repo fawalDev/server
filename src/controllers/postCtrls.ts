@@ -7,6 +7,7 @@ import Res from '../models/response/res.ts';
 import { validationResult } from 'express-validator';
 import { createErrorRes } from '../utils/exValidator/createErrorRes.ts';
 import IO from '../utils/socket.io.ts';
+import User from '../models/mogooseModels/user.ts';
 
 
 
@@ -22,14 +23,29 @@ async function createPost(req: Request, res: Response, next: NextFunction) {
             throw new ErrorRes('Create post failed', 422, errorObj);
         }
 
+        const user = await User.findById(req.user?.id)
+        if (!user)
+            throw new ErrorRes('Create post failed', 422, { user: 'User is not existed' })
+
+
         const filePath = req.file.path
 
         const { title, content } = req.body;
-        const post = await Post.create({ title, content, imgUrl: filePath });
+        const post = await Post.create({ title, content, imgUrl: filePath, creator: user._id });
         const postObject = post.toObject();
+
+        user.posts = [...user!.posts, post._id as any]
+        user.save()
+
         IO.getIO().emit('posts', {
             action: 'create',
-            post: postObject
+            post: {
+                ...postObject,
+                creator: {
+                    _id: String(user?._id),
+                    name: user?.name || user?.email
+                }
+            },
         })
 
         res.status(201).json(postObject);
@@ -55,8 +71,11 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
         const skip = (page - 1) * limit;
 
         const posts = await Post.find()
-            .skip(skip)
-            .limit(limit)
+            .skip(skip).limit(limit)
+            .populate({
+                path: 'creator',
+                select: 'email name'
+            })
             .lean();
 
         res.status(200).json(posts);
@@ -68,7 +87,9 @@ async function getPosts(req: Request, res: Response, next: NextFunction) {
 // Get a single post by ID
 async function getPost(req: Request, res: Response, next: NextFunction) {
     try {
-        const post = await Post.findById(req.params.id).lean();
+        const post = await Post.findById(req.params.id)
+            .populate('creator', 'email name')
+            .lean();
         if (!post) {
             throw new ErrorRes('Post not found', 404);
         }
@@ -95,8 +116,14 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
             id,
             { title, content, imgUrl },
             { new: true }
-        ).lean();
+        )
+            .populate('creator', 'email name')
+            .lean();
 
+        IO.getIO().emit('posts', {
+            action: 'update',
+            post: post
+        })
 
         if (!post) {
             throw new ErrorRes('Post not found', 404);

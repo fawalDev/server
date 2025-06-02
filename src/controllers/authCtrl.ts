@@ -32,8 +32,9 @@ async function login(req: Request, res: Response, next: NextFunction) {
 
         const isValid = await bcrypt.compare(password, user?.password)
         if (isValid) {
-            const { name, email, isAdmin } = user
-            const payload = new JwtPayload(email, name, isAdmin).toObject()
+            const { _id, name, email, isAdmin } = user
+            const payload = new JwtPayload(_id, email, name, isAdmin).toObject()
+
             const token = 'Bearer ' + jwtGen(payload)
 
             res.status(200).json(new AuthRes(token, { email, name, isAdmin }))
@@ -63,8 +64,8 @@ async function signup(req: Request, res: Response, next: NextFunction) {
             email: email, name: name, password: hashed
         })
 
-        const { isAdmin } = created
-        const payload = new JwtPayload(email, name, isAdmin).toObject()
+        const { _id, isAdmin } = created
+        const payload = new JwtPayload(_id, email, name, isAdmin).toObject()
         const token = 'Bearer ' + jwtGen(payload)
 
         res.status(201).json(new AuthRes(token, { email, name, isAdmin }))

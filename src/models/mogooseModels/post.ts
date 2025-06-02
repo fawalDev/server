@@ -7,7 +7,8 @@ export interface IPostModel extends Model<IPost> { }
 const postSchema = new Schema<IPost, IPostModel>({
     title: { type: String, required: true, trim: true, },
     content: { type: String, required: true, trim: true, },
-    imgUrl: { type: String, required: false, trim: true, }
+    imgUrl: { type: String, required: false, trim: true, },
+    creator: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
     timestamps: true
 })

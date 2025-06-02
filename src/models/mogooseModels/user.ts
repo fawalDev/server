@@ -8,7 +8,8 @@ const userSchema = new Schema<IUser, IUserModel>({
     email: { type: String, required: true, unique: true, trim: true },
     name: { type: String, trim: true },
     password: { type: String, required: true, trim: true },
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
 })
 
 const User = model<IUser, IUserModel>('User', userSchema);
