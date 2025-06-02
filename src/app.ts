@@ -48,9 +48,16 @@ app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
 import bcrypt from 'bcryptjs'
 import User from './models/mogooseModels/user.ts';
 
+import IO from './utils/socket.io.ts'
+
 Mongoose.connect(process.env.MONGODB_URI!)
     .then(_ => {
-        app.listen(5000)
+        const server = app.listen(5000)
+        IO.init(server);
+        IO.getIO().on('connection', socket => {
+            console.log('Socket connected:', socket.id);
+            
+        })
         return User.findOne({ email: 'admin@gmail.com' })
     })
     // check existed and create admin user

@@ -4,6 +4,9 @@ import type IPostError from '../interfaces/response/error/postError.ts';
 import Post from '../models/mogooseModels/post.ts';
 import ErrorRes from '../models/response/errorRes.ts';
 import Res from '../models/response/res.ts';
+import { validationResult } from 'express-validator';
+import { createErrorRes } from '../utils/exValidator/createErrorRes.ts';
+import IO from '../utils/socket.io.ts';
 
 
 
@@ -13,11 +16,23 @@ async function createPost(req: Request, res: Response, next: NextFunction) {
         if (!req.file)
             throw new ErrorRes<IPostError>('Create post failed', 422, { image: 'Image file is required' });
 
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorObj = createErrorRes(errors)
+            throw new ErrorRes('Create post failed', 422, errorObj);
+        }
+
         const filePath = req.file.path
 
         const { title, content } = req.body;
         const post = await Post.create({ title, content, imgUrl: filePath });
-        res.status(201).json(post);
+        const postObject = post.toObject();
+        IO.getIO().emit('posts', {
+            action: 'create',
+            post: postObject
+        })
+
+        res.status(201).json(postObject);
     } catch (error) {
         next(error);
     }
@@ -66,12 +81,22 @@ async function getPost(req: Request, res: Response, next: NextFunction) {
 // Update a post
 async function updatePost(req: Request, res: Response, next: NextFunction) {
     try {
+        if (!req.file)
+            throw new ErrorRes<IPostError>('Update post failed', 422, { image: 'Image file is required' });
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorObj = createErrorRes(errors)
+            throw new ErrorRes('Update post failed', 422, errorObj);
+        }
+
         const { id, title, content, imgUrl } = req.body;
         const post = await Post.findByIdAndUpdate(
             id,
             { title, content, imgUrl },
             { new: true }
         ).lean();
+
 
         if (!post) {
             throw new ErrorRes('Post not found', 404);
@@ -85,6 +110,9 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
 // Delete a post
 async function deletePost(req: Request, res: Response, next: NextFunction) {
     try {
+        if (!req.params.id)
+            throw new ErrorRes('Post ID is required', 422);
+
         const post = await Post.findByIdAndDelete(req.params.id);
         if (!post) {
             throw new ErrorRes('Post not found', 404);
