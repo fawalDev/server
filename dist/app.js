@@ -34,7 +34,7 @@ import User from './models/mogooseModels/user.js';
 import IO from './utils/socket.io.js';
 Mongoose.connect(process.env.MONGODB_URI)
     .then(_ => {
-    const server = app.listen(5000);
+    const server = app.listen(process.env.PORT || 5000);
     IO.init(server);
     IO.getIO().on('connection', socket => {
         console.log('Socket connected:', socket.id);
