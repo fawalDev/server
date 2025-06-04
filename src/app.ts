@@ -1,4 +1,3 @@
-import './.d.ts/requestHandler.d.js'
 import type { Request, Response, NextFunction } from 'express'
 import type ErrorRes from './models/response/errorRes.js';
 
