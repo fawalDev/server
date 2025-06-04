@@ -146,9 +146,16 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
             throw new ErrorRes('Post ID is required', 422);
 
         const post = await Post.findByIdAndDelete(req.params.id);
-        if (!post) {
+        if (!post)
             throw new ErrorRes('Post not found', 404);
+
+        const emitVal: PostEmitVal = {
+            action: 'delete',
+            postId: String(post._id)
         }
+
+        IO.getIO().emit('posts', emitVal)
+
         res.status(200).json(new Res('Post deleted successfully', 200));
     } catch (error) {
         next(error);
