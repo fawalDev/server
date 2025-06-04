@@ -8,6 +8,8 @@ import { validationResult } from 'express-validator';
 import { createErrorRes } from '../utils/exValidator/createErrorRes.ts';
 import IO from '../utils/socket.io.ts';
 import User from '../models/mogooseModels/user.ts';
+import type { PostEmitVal } from '../types/socket.IO.ts';
+import type IPost from '../interfaces/post.ts';
 
 
 
@@ -37,16 +39,17 @@ async function createPost(req: Request, res: Response, next: NextFunction) {
         user.posts = [...user!.posts, post._id as any]
         user.save()
 
-        IO.getIO().emit('posts', {
+        const emitVal: PostEmitVal = {
             action: 'create',
             post: {
                 ...postObject,
                 creator: {
-                    _id: String(user?._id),
+                    _id: user?._id,
                     name: user?.name || user?.email
-                }
+                } as any
             },
-        })
+        }
+        IO.getIO().emit('posts', emitVal)
 
         res.status(201).json(postObject);
     } catch (error) {
@@ -102,8 +105,8 @@ async function getPost(req: Request, res: Response, next: NextFunction) {
 // Update a post
 async function updatePost(req: Request, res: Response, next: NextFunction) {
     try {
-        if (!req.file)
-            throw new ErrorRes<IPostError>('Update post failed', 422, { image: 'Image file is required' });
+        // if (!req.file)
+        //     throw new ErrorRes<IPostError>('Update post failed', 422, { image: 'Image file is required' });
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -120,10 +123,12 @@ async function updatePost(req: Request, res: Response, next: NextFunction) {
             .populate('creator', 'email name')
             .lean();
 
-        IO.getIO().emit('posts', {
+        const emitVal: PostEmitVal = {
             action: 'update',
-            post: post
-        })
+            post: post as IPost
+        }
+
+        IO.getIO().emit('posts', emitVal)
 
         if (!post) {
             throw new ErrorRes('Post not found', 404);
