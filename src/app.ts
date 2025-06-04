@@ -1,6 +1,6 @@
-import './.d.ts/requestHandler.d.ts'
+import './.d.ts/requestHandler.d.js'
 import type { Request, Response, NextFunction } from 'express'
-import type ErrorRes from './models/response/errorRes.ts';
+import type ErrorRes from './models/response/errorRes.js';
 
 import express from 'express';
 import dotenv from 'dotenv';
@@ -8,8 +8,8 @@ dotenv.config();
 import cors from 'cors';
 import Mongoose from 'mongoose';
 
-import authRoute from './routes/authen.ts';
-import postRoute from './routes/post.ts';
+import authRoute from './routes/authen.js';
+import postRoute from './routes/post.js';
 
 const app = express();
 
@@ -46,9 +46,9 @@ app.use((error: ErrorRes, req: Request, res: Response, nex: NextFunction) => {
 })
 
 import bcrypt from 'bcryptjs'
-import User from './models/mogooseModels/user.ts';
+import User from './models/mogooseModels/user.js';
 
-import IO from './utils/socket.io.ts'
+import IO from './utils/socket.io.js'
 
 Mongoose.connect(process.env.MONGODB_URI!)
     .then(_ => {

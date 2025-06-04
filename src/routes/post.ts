@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
-import postCtrl from '../controllers/postCtrls.ts';
-import isAuth from '../middlewares/isAuth.ts';
-import { multerImgMw } from '../middlewares/multer.ts';
-import { addPostValidator, updatePostValidator } from '../middlewares/exValidator/postValidator.ts';
+import postCtrl from '../controllers/postCtrls.js';
+import isAuth from '../middlewares/isAuth.js';
+import { multerImgMw } from '../middlewares/multer.js';
+import { addPostValidator, updatePostValidator } from '../middlewares/exValidator/postValidator.js';
 
 const postRoute = Router();
 

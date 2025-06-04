@@ -1,5 +1,5 @@
 import { check, body } from 'express-validator'
-import User from '../../models/mogooseModels/user.ts'
+import User from '../../models/mogooseModels/user.js'
 
 export const isValidSignup = [
     check('email')

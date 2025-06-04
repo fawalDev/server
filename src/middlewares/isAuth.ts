@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from 'express'
-import type IAuthRes from '../interfaces/response/fulfill/authenRes.ts';
+import type IAuthRes from '../interfaces/response/fulfill/authenRes.js';
 
-import ErrorRes from '../models/response/errorRes.ts';
-import { jwtVerify } from '../utils/jwtToken.ts';
-import type JwtPayload from '../models/jwtPayload.ts';
+import ErrorRes from '../models/response/errorRes.js';
+import { jwtVerify } from '../utils/jwtToken.js';
+import type JwtPayload from '../models/jwtPayload.js';
 
 
 

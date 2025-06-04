@@ -1,18 +1,18 @@
 import type { Request, Response, NextFunction } from 'express'
-import type IAuthError from '../interfaces/response/error/authError.ts'
-import type IAuthRes from '../interfaces/response/fulfill/authenRes.ts'
+import type IAuthError from '../interfaces/response/error/authError.js'
+import type IAuthRes from '../interfaces/response/fulfill/authenRes.js'
 
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcryptjs'
 
-import ErrorRes from '../models/response/errorRes.ts'
-import Res from '../models/response/res.ts'
+import ErrorRes from '../models/response/errorRes.js'
+import Res from '../models/response/res.js'
 
-import User from '../models/mogooseModels/user.ts'
-import { createErrorRes } from '../utils/exValidator/createErrorRes.ts'
-import { jwtGen } from '../utils/jwtToken.ts'
-import JwtPayload from '../models/jwtPayload.ts'
-import AuthRes from '../models/response/authRes.ts'
+import User from '../models/mogooseModels/user.js'
+import { createErrorRes } from '../utils/exValidator/createErrorRes.js'
+import { jwtGen } from '../utils/jwtToken.js'
+import JwtPayload from '../models/jwtPayload.js'
+import AuthRes from '../models/response/authRes.js'
 
 
 // req.body = { email, password }

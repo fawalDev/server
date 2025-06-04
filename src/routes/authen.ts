@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
-import { isValidLogin, isValidSignup } from '../middlewares/exValidator/authValidator.ts';
-import autCtrl from '../controllers/authCtrl.ts';
+import { isValidLogin, isValidSignup } from '../middlewares/exValidator/authValidator.js';
+import autCtrl from '../controllers/authCtrl.js';
 
 const authRoute = Router();
 

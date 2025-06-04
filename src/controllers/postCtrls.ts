@@ -1,15 +1,15 @@
 import type { Request, Response, NextFunction } from 'express';
-import type IPostError from '../interfaces/response/error/postError.ts';
+import type IPostError from '../interfaces/response/error/postError.js';
 
-import Post from '../models/mogooseModels/post.ts';
-import ErrorRes from '../models/response/errorRes.ts';
-import Res from '../models/response/res.ts';
+import Post from '../models/mogooseModels/post.js';
+import ErrorRes from '../models/response/errorRes.js';
+import Res from '../models/response/res.js';
 import { validationResult } from 'express-validator';
-import { createErrorRes } from '../utils/exValidator/createErrorRes.ts';
-import IO from '../utils/socket.io.ts';
-import User from '../models/mogooseModels/user.ts';
-import type { PostEmitVal } from '../types/socket.IO.ts';
-import type IPost from '../interfaces/post.ts';
+import { createErrorRes } from '../utils/exValidator/createErrorRes.js';
+import IO from '../utils/socket.io.js';
+import User from '../models/mogooseModels/user.js';
+import type { PostEmitVal } from '../types/socket.IO.js';
+import type IPost from '../interfaces/post.js';
 
 
 
